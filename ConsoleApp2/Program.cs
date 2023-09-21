@@ -1,4 +1,4 @@
-﻿using PokeGame;
+﻿using PokemonCommon;
 using PokemonCommon.Characters;
 using PokemonCommon.Enums;
 using PokemonCommon.Pokemons;
@@ -7,19 +7,18 @@ using PokemonCommon.Pokemons.Attacks;
 
 Trainer ash = new Trainer("Ash");
 
-Pokemon sobble = new Pokemon("Sobble", PokeTypes.Water);
-Pokemon charmander = new Pokemon("Charmander", PokeTypes.Fire);
+Pokemon sobble = new Pokemon("Sobble", 50, PokeTypes.Water);
+Pokemon charmander = new Pokemon("Charmander", 60, PokeTypes.Fire);
 
-Ember ember = new Ember();
-charmander.LearnAttack(ember, 0);
+charmander.LearnAttack(InstancedAttacks.ember, 0);
+charmander.LearnAttack(InstancedAttacks.scratch, 1);
+charmander.LearnAttack(InstancedAttacks.baddyBad, 2);
+charmander.LearnAttack(InstancedAttacks.bugBite, 3);
 
-WaterGun waterGun = new WaterGun();
-sobble.LearnAttack(waterGun, 0);
+sobble.LearnAttack(InstancedAttacks.waterGun, 0);
+sobble.LearnAttack(InstancedAttacks.tackle, 1);
+sobble.LearnAttack(InstancedAttacks.ember, 2);
+sobble.LearnAttack(InstancedAttacks.bugBite, 3);
 
-Console.WriteLine("--------------------------");
 
-Console.WriteLine(sobble.HealthPoints);
-
-BattleEngine.MakeAttack(sobble, ember);
-
-Console.WriteLine(sobble.HealthPoints);
+BattleEngine.PerformBattle(sobble, charmander);

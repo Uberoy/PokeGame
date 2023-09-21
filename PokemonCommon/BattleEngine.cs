@@ -2,14 +2,63 @@
 using PokemonCommon.Pokemons;
 using PokemonCommon.Pokemons.Attacks;
 
-namespace PokeGame;
+namespace PokemonCommon;
 
 public static class BattleEngine
 {
-    // Detta är en statisk metod. Statiska metoder anropas via typen och inte via objekt.
-    public static void MakeAttack(Pokemon target, Attack attack)
+    public static void PerformBattle(Pokemon pokemon1, Pokemon pokemon2)
     {
-        target.HealthPoints -= attack.Damage;
+        Random rng = new Random();
+        int turn = 0;
+        bool adjustedTurnOrderForSpeed = false;
+        Pokemon activePokemon = pokemon1;
+        Pokemon activePokemon2 = pokemon2;
+        while (pokemon1.HealthPoints > 0 && pokemon2.HealthPoints > 0)
+        {
+            if (pokemon1.Speed > pokemon2.Speed && adjustedTurnOrderForSpeed == false)
+            {
+                turn = 1;
+                adjustedTurnOrderForSpeed = true;
+            }
+            if (turn % 2 == 0)
+            {
+                BattleUi.DisplayStartOfRound(pokemon1, pokemon2, true);
+                var selectedAttack = int.Parse(Console.ReadKey().KeyChar.ToString());
+                BattleUi.DisplayRoundResult(pokemon1, pokemon2, selectedAttack);
+                turn++;
+                continue;
+            }
+
+            if (turn % 2 != 0)
+            {
+                BattleUi.DisplayStartOfRound(pokemon2, pokemon1, false);
+                int selectedAttack = rng.Next(0, 4);
+                BattleUi.DisplayRoundResult(pokemon2, pokemon1, selectedAttack);
+                turn++;
+                continue;
+            }
+        }
+
+        if (pokemon1.HealthPoints <= 0)
+        {
+            Console.WriteLine($"The winner is {pokemon2.Name}!");
+        }
+        if (pokemon2.HealthPoints <= 0)
+        {
+            Console.WriteLine($"The winner is {pokemon1.Name}!");
+        }
+
+        Console.ReadKey();
+    }
+    // Detta är en statisk metod. Statiska metoder anropas via typen och inte via objekt.
+    public static void MakeAttack(Pokemon target, Attack attack, string attacker)
+    {
+        Effectiveness effectiveness = CheckEffectiveness(target.Types.ToArray(), attack.Type);
+
+        BattleUi.DisplayDamageEffectiveness(effectiveness, attack.Name, attacker);
+        double modifier = (double)effectiveness / 100f;
+
+        target.HealthPoints -= attack.Damage*modifier;
     }
 
     public static Effectiveness CheckEffectiveness(PokeTypes[] targetTypes, PokeTypes attackType)

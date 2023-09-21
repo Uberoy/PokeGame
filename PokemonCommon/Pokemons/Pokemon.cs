@@ -42,6 +42,13 @@ namespace PokemonCommon.Pokemons
 
         public Attack[] Attacks { get; } = new Attack[4];
 
+        private int _speed;
+        public int Speed
+        {
+            get { return _speed; }
+            set { _speed = value; }
+        }
+
 
         #endregion
 
@@ -53,9 +60,10 @@ namespace PokemonCommon.Pokemons
         }
 
         // Detta är ytterligare en konstruktor, denna gång med parametrar. En klass kan ha 0 ... n konstruktorer, bara alla har olika signatur.
-        public Pokemon(string name, PokeTypes[] types)
+        public Pokemon(string name, int speed, params PokeTypes[] types)
         {
             _name = name;
+            _speed = speed;
             _types = types.ToList();
         }
 
